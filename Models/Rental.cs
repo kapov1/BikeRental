@@ -7,8 +7,6 @@ class Rental
 
     public Rental(Customer customer, Bike bike, DateOnly startDate, DateOnly plannedReturnDate)
     {
-        Customer = customer;
-
         if (bike.Status == Bike.BikeStatus.Available) 
         {
             Bike = bike;
@@ -16,6 +14,7 @@ class Rental
         }
         else throw new ArgumentException($"Bike {bike.BikeID} is currently unavailable: it is either already rented out or undergoing maintenance.");
 
+        Customer = customer;
         StartDate = startDate;
         PlannedReturnDate = plannedReturnDate;
     }
