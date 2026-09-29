@@ -16,7 +16,7 @@ class CustomerService
     {
         if (!Contains(customer))
         {
-            _customerStorage.Customers.Add(customer);
+            _customerStorage.Add(customer);
             return true;
         }
         else
@@ -25,18 +25,8 @@ class CustomerService
         }
     }
 
-    public bool TryDelete(Customer customer)
-    {
-        if (Contains(customer))
-        {
-            _customerStorage.Customers.Remove(customer);
-            return true;
-        }
-        else return false;
-    }
-
     public List<Customer> Find(Predicate<Customer> match)
     {
-        return _customerStorage.Customers.FindAll(match);
+        return _customerStorage.FindAll(match);
     }
 }
