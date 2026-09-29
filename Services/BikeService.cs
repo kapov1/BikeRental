@@ -29,4 +29,9 @@ class BikeService
     {
         return _bikeStorage.Bikes.Where(match).ToList();
     }
+
+    public void ChangeBikeStatus(Bike bike, Bike.BikeStatus status)
+    {
+        bike.Status = status;
+    }
 }
