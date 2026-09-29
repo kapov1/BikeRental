@@ -21,12 +21,11 @@ class Bike
     public BikeType Type { get; }
     public BikeStatus Status = BikeStatus.Available;
 
-    public Bike(string bikeName, string bikeID, int pricePerDay, BikeType type, BikeStatus status)
+    public Bike(string bikeName, string bikeID, int pricePerDay, BikeType type)
     {
         BikeName = bikeName;
         BikeID = bikeID;
         PricePerDay = pricePerDay;
         Type = type;
-        Status = status;
     }
 }
