@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 class BikeService
 {
     private readonly BikeStorage _bikeStorage;
@@ -30,8 +32,42 @@ class BikeService
         return _bikeStorage.Bikes.Where(match).ToList();
     }
 
-    public void ChangeBikeStatus(Bike bike, Bike.BikeStatus status)
+    public bool TryRent(Bike bike)
     {
-        bike.Status = status;
+        if (bike.Status == Bike.BikeStatus.Available)
+        {
+            bike.Status = Bike.BikeStatus.Rented;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool TryReturn(Bike bike)
+    {
+        if (bike.Status != Bike.BikeStatus.Available)
+        {
+            bike.Status = Bike.BikeStatus.Available;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool TrySendToMaintenance(Bike bike)
+    {
+        if (bike.Status == Bike.BikeStatus.Available)
+        {
+            bike.Status = Bike.BikeStatus.IsService;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
