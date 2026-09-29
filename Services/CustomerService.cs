@@ -1,5 +1,3 @@
-using System.Linq;
-
 class CustomerService
 {
     private readonly CustomerStorage _customerStorage;
