@@ -8,9 +8,4 @@ class CustomerStorage
     {
         _customers.Add(customer);
     }
-
-    public List<Customer> FindAll(Predicate<Customer> match)
-    {
-        return _customers.FindAll(match);
-    }
 }

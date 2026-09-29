@@ -25,8 +25,8 @@ class CustomerService
         }
     }
 
-    public List<Customer> Find(Predicate<Customer> match)
+    public List<Customer> Find(Func<Customer, bool> match)
     {
-        return _customerStorage.FindAll(match);
+        return _customerStorage.Customers.Where(match).ToList();
     }
 }
