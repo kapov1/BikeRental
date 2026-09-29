@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 class BikeService
 {
     private readonly BikeStorage _bikeStorage;
@@ -36,7 +34,7 @@ class BikeService
     {
         if (bike.Status == Bike.BikeStatus.Available)
         {
-            bike.Status = Bike.BikeStatus.Rented;
+            bike.ChangeStatusToAvailable();
             return true;
         }
         else
@@ -49,7 +47,7 @@ class BikeService
     {
         if (bike.Status != Bike.BikeStatus.Available)
         {
-            bike.Status = Bike.BikeStatus.Available;
+            bike.ChangeStatusToAvailable();
             return true;
         }
         else
@@ -62,7 +60,7 @@ class BikeService
     {
         if (bike.Status == Bike.BikeStatus.Available)
         {
-            bike.Status = Bike.BikeStatus.IsService;
+            bike.ChangeStatusToIsService();
             return true;
         }
         else
