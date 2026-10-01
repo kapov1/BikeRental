@@ -47,7 +47,7 @@ class RentalService
         return rental.Id;
     }
 
-    public (int rentalCost, int pentalyFee) Close(Guid key)
+    public (int rentalCost, int penaltyFee) CalculateRental(Guid key)
     {
         var rental = FindFromGuid(key);
         if (rental == null) throw new KeyNotFoundException("Rental with the specified key was not found.");
@@ -60,8 +60,8 @@ class RentalService
         int price = rental.Bike.PricePerDay;
 
         int rentalCost = plannedReturnDate >= currentDate ? currentRentalDays * price : totalRentalDays * price;
-        int pentalyFee = plannedReturnDate >= currentDate ? 0 : (currentDate.DayNumber - plannedReturnDate.DayNumber) * _penaltyRatePerDay;
+        int penaltyFee = plannedReturnDate >= currentDate ? 0 : (currentDate.DayNumber - plannedReturnDate.DayNumber) * _penaltyRatePerDay;
             
-        return (rentalCost, pentalyFee);
+        return (rentalCost, penaltyFee);
     }   
 }

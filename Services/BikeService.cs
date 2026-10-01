@@ -34,7 +34,7 @@ class BikeService
     {
         if (bike.Status == Bike.BikeStatus.Available)
         {
-            bike.ChangeStatusToAvailable();
+            bike.ChangeStatusToIsService();
             return true;
         }
         else
