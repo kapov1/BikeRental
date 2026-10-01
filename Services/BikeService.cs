@@ -34,7 +34,7 @@ class BikeService
     {
         if (bike.Status == Bike.BikeStatus.Available)
         {
-            bike.ChangeStatusToIsService();
+            bike.ChangeStatusToRented();
             return true;
         }
         else
