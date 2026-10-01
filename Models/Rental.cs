@@ -4,15 +4,11 @@ class Rental
     public Bike Bike { get; }
     public DateOnly StartDate { get; }
     public DateOnly PlannedReturnDate { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 
-    public Rental(Customer customer, Bike bike, DateOnly startDate, DateOnly plannedReturnDate, BikeService bikeService)
+    public Rental(Customer customer, Bike bike, DateOnly startDate, DateOnly plannedReturnDate)
     {        
-        if (bikeService.TryRent(bike)) 
-        {
-            Bike = bike;
-        }
-        else throw new ArgumentException($"Bike {bike.BikeID} is currently unavailable: it is either already rented out or undergoing maintenance.");
-
+        Bike = bike;
         Customer = customer;
         StartDate = startDate;
         PlannedReturnDate = plannedReturnDate;
