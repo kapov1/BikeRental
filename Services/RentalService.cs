@@ -26,9 +26,13 @@ class RentalService
         return true;
     }
 
-    private Rental? FindFromGuid(Guid key)
+    private Rental GetRentalOrThrow(Guid key)
     {
-        return _rentalStorage.Rentals.FirstOrDefault(rent => rent.Id == key);
+        var rental = _rentalStorage.Rentals.FirstOrDefault(rent => rent.Id == key);
+
+        if (rental is null) throw new KeyNotFoundException("Rental with the specified key was not found.");
+
+        return rental;
     }
 
     public Guid Open(Bike bike, Customer customer, DateOnly startDate, DateOnly plannedReturnDate, BikeService bikeService)
@@ -49,8 +53,7 @@ class RentalService
 
     public (int rentalCost, int penaltyFee) CalculateRental(Guid key)
     {
-        var rental = FindFromGuid(key);
-        if (rental == null) throw new KeyNotFoundException("Rental with the specified key was not found.");
+        var rental = GetRentalOrThrow(key);
 
         DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
         DateOnly startDate = rental.StartDate;
@@ -64,4 +67,13 @@ class RentalService
             
         return (rentalCost, penaltyFee);
     }   
+
+    public void Close(Guid key, BikeService bikeService)
+    {
+        var rental = GetRentalOrThrow(key);
+
+        if (!bikeService.TryReturn(rental.Bike)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
+
+        //типо сохраняю в историю, в файлы, логи вывожу...
+    }
 }
