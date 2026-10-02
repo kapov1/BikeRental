@@ -1,11 +1,13 @@
 class RentalService
 {
     private readonly RentalStorage _rentalStorage;
+    private readonly BikeService _bikeService;
     private int _penaltyRatePerDay = 10;
 
-    public RentalService(RentalStorage rentalStorage)
+    public RentalService(RentalStorage rentalStorage, BikeService bikeService)
     {
         _rentalStorage = rentalStorage;
+        _bikeService = bikeService;
     }
 
     private void AddToData(Rental rental) => _rentalStorage.Add(rental);
@@ -33,13 +35,13 @@ class RentalService
         return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
-    public Guid Open(Bike bike, Customer customer, DateOnly startDate, DateOnly plannedReturnDate, BikeService bikeService)
+    public Guid Open(Bike bike, Customer customer, DateOnly startDate, DateOnly plannedReturnDate)
     {
         if (!ValidDataForRental(bike, startDate, plannedReturnDate))
         {
             throw new ArgumentException("Rental validation failed. Cannot process the request.");
         }
-        if (!bikeService.TryRent(bike))
+        if (!_bikeService.TryRent(bike))
         {
             throw new ArgumentException("Selected bike is not available for rental.");
         }
@@ -66,11 +68,11 @@ class RentalService
         return (rentalCost, penaltyFee);
     }   
 
-    public void Close(Guid key, BikeService bikeService)
+    public void Close(Guid key)
     {
         var rental = GetRentalOrThrow(key);
 
-        if (!bikeService.TryReturn(rental.Bike)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
+        if (!_bikeService.TryReturn(rental.Bike)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
 
         //типо сохраняю в историю, в файлы, логи вывожу...
     }
