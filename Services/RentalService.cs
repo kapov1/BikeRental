@@ -30,9 +30,7 @@ class RentalService
     {
         var rental = _rentalStorage.Rentals.FirstOrDefault(rent => rent.Id == key);
 
-        if (rental is null) throw new KeyNotFoundException("Rental with the specified key was not found.");
-
-        return rental;
+        return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
     public Guid Open(Bike bike, Customer customer, DateOnly startDate, DateOnly plannedReturnDate, BikeService bikeService)
