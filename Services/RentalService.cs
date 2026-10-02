@@ -21,7 +21,7 @@ class RentalService
         }
         if (bike.Status != Bike.BikeStatus.Available)
         {
-            Console.WriteLine($"Bike {bike.BikeID} is currently unavailable: it is either already rented out or undergoing maintenance.");
+            Console.WriteLine($"Bike {bike.Id} is currently unavailable: it is either already rented out or undergoing maintenance.");
             return false;
         }
 
