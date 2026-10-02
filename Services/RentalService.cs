@@ -1,13 +1,16 @@
+using Microsoft.Extensions.Configuration;
+
 class RentalService
 {
     private readonly RentalStorage _rentalStorage;
     private readonly BikeService _bikeService;
-    private int _penaltyRatePerDay = 10;
+    private int _penaltyRatePerDay;
 
-    public RentalService(RentalStorage rentalStorage, BikeService bikeService)
+    public RentalService(RentalStorage rentalStorage, BikeService bikeService, IConfiguration configuration)
     {
         _rentalStorage = rentalStorage;
         _bikeService = bikeService;
+        _penaltyRatePerDay = configuration.GetValue<int>("PenaltyRatePerDay");
     }
 
     private void AddToData(Rental rental) => _rentalStorage.Add(rental);
