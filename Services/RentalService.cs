@@ -4,7 +4,7 @@ class RentalService
 {
     private readonly RentalStorage _rentalStorage;
     private readonly BikeService _bikeService;
-    private int _penaltyRatePerDay;
+    private readonly int _penaltyRatePerDay;
 
     public RentalService(RentalStorage rentalStorage, BikeService bikeService, IConfiguration configuration)
     {
