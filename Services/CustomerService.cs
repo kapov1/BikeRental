@@ -25,8 +25,23 @@ class CustomerService
         }
     }
 
-    public List<Customer> Find(Func<Customer, bool> match)
+    public List<CustomerInfo> Find(Func<Customer, bool> match)
     {
-        return _customerStorage.Customers.Where(match).ToList();
+        return _customerStorage.Customers
+            .Where(match)
+            .Select(client => new CustomerInfo(
+                client.FirstName,
+                client.LastName,
+                client.PhoneNumber,
+                client.RegistrationDate
+            ))
+            .ToList();
     }
 }
+
+readonly record struct CustomerInfo(
+    string FirstName,
+    string LastName,
+    string PhoneNumber,
+    DateOnly RegestrationDate
+);
