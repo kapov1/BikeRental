@@ -35,7 +35,7 @@ class RentalService
         return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
-    public Guid OpenOrThrow(BikeInfo bikeInfo, Customer customer, DateOnly startDate, DateOnly plannedReturnDate)
+    public Guid OpenOrThrow(BikeInfo bikeInfo, CustomerInfo customerInfo, DateOnly startDate, DateOnly plannedReturnDate)
     {
         if (!ValidDataForRental(bikeInfo, startDate, plannedReturnDate))
         {
@@ -46,7 +46,7 @@ class RentalService
             throw new ArgumentException("Selected bike is not available for rental.");
         }
 
-        Rental rental = new(customer, bikeInfo, startDate, plannedReturnDate);
+        Rental rental = new(customerInfo, bikeInfo, startDate, plannedReturnDate);
         AddToData(rental);
         return rental.Id;
     }
