@@ -16,7 +16,7 @@ class Bike
     }
 
     public string BikeName { get; }
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public int PricePerDay { get; }
     public BikeType Type { get; }
     public BikeStatus Status { get; private set; } = BikeStatus.Available;
