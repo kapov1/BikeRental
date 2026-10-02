@@ -12,16 +12,19 @@ class RentalService
 
     private void AddToData(Rental rental) => _rentalStorage.Add(rental);
 
-    private bool ValidDataForRental(BikeInfo bikeInfo, DateOnly startDate, DateOnly plannedReturnDate)
+    private bool ValidDataForRental(Guid bikeId, DateOnly startDate, DateOnly plannedReturnDate)
     {
+        var bikeStatus = _bikeService.GetRequiredBikeStatus(bikeId);
+        var bikeInfo = _bikeService.GetRequiredBikeInfo(bikeId);
+
         if (startDate > plannedReturnDate)
         {
             Console.WriteLine("Return date must be after start date.");
             return false;
         }
-        if (bikeInfo.Status != Bike.BikeStatus.Available)
+        if (bikeStatus != Bike.BikeStatus.Available)
         {
-            Console.WriteLine($"Bike {bikeInfo.Id} is currently unavailable: it is either already rented out or undergoing maintenance.");
+            Console.WriteLine($"Bike {bikeInfo.BikeName} is currently unavailable: it is either already rented out or undergoing maintenance.");
             return false;
         }
 
@@ -35,9 +38,11 @@ class RentalService
         return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
-    public Guid OpenOrThrow(BikeInfo bikeInfo, CustomerInfo customerInfo, DateOnly startDate, DateOnly plannedReturnDate)
-    {
-        if (!ValidDataForRental(bikeInfo, startDate, plannedReturnDate))
+    public Guid OpenOrThrow(Guid bikeId, CustomerInfo customerInfo, DateOnly startDate, DateOnly plannedReturnDate)
+    {   
+        var bikeInfo = _bikeService.GetRequiredBikeInfo(bikeId);
+
+        if (!ValidDataForRental(bikeInfo.Id, startDate, plannedReturnDate))
         {
             throw new ArgumentException("Rental validation failed. Cannot process the request.");
         }

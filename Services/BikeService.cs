@@ -1,3 +1,5 @@
+using System.Data.Common;
+
 class BikeService
 {
     private readonly BikeStorage _bikeStorage;
@@ -19,7 +21,7 @@ class BikeService
         _bikeStorage.Add(bike);
     }
 
-    private Bike FindByID(Guid id)
+    private Bike FindByIDOrThrow(Guid id)
     {
         return _bikeStorage.Bikes.First(bike => bike.Id == id);
     }
@@ -33,23 +35,9 @@ class BikeService
         return bike.Id;
     }
 
-    public List<BikeInfo> Find(Func<Bike, bool> match)
-    {
-        return _bikeStorage.Bikes
-        .Where(match)
-        .Select(bike => new BikeInfo(
-            bike.BikeName,
-            bike.PricePerDay,
-            bike.Type,
-            bike.Status,
-            bike.Id
-        ))
-        .ToList();
-    }
-
     public bool TryRent(Guid id)
     {
-        var bike = FindByID(id);
+        var bike = FindByIDOrThrow(id);
 
         if (bike.Status == Bike.BikeStatus.Available)
         {
@@ -64,7 +52,7 @@ class BikeService
 
     public bool TryReturn(Guid id)
     {
-        var bike = FindByID(id);
+        var bike = FindByIDOrThrow(id);
 
         if (bike.Status != Bike.BikeStatus.Available)
         {
@@ -79,7 +67,7 @@ class BikeService
 
     public bool TrySendToMaintenance(Guid id)
     {
-        var bike = FindByID(id);
+        var bike = FindByIDOrThrow(id);
 
         if (bike.Status == Bike.BikeStatus.Available)
         {
@@ -92,12 +80,18 @@ class BikeService
         }
     }
 
-    // public BikeInfo GetRequiredBikeInfo(Guid id)
-    // {
-    //     var bike = _bikeStorage.Bikes.FirstOrDefault(bike => bike.Id == id);
-        
-    //     if (bike is null) throw new KeyNotFoundException("Bike with the specified key was not found.");
+    public BikeInfo GetRequiredBikeInfo(Guid id)
+    {
+        var bike = _bikeStorage.Bikes.FirstOrDefault(bike => bike.Id == id);
+     
+        if (bike is null) throw new KeyNotFoundException("Bike with the specified key was not found.");
 
-    //     return new(bike.BikeName, bike.PricePerDay, bike.Type, bike.Status, bike.Id);
-    // }
+        return new(bike.BikeName, bike.PricePerDay, bike.Type, bike.Id);
+    }
+
+    public Bike.BikeStatus GetRequiredBikeStatus(Guid id)
+    {
+        var bike = FindByIDOrThrow(id);
+        return bike.Status;
+    }
 }
