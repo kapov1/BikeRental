@@ -1,5 +1,3 @@
-using System.Data.Common;
-
 class BikeService
 {
     private readonly BikeStorage _bikeStorage;
@@ -9,17 +7,7 @@ class BikeService
         _bikeStorage = bikeStorage;
     }
 
-    private bool Contains(Bike bike)
-    {
-        return _bikeStorage.Bikes.Any(el => el.Id == bike.Id);
-    }
-
-    private void AddToDataOrThrow(Bike bike)
-    {
-        if (Contains(bike)) throw new ArgumentException("A bike with the specified ID already exists.");
-
-        _bikeStorage.Add(bike);
-    }
+    private void AddToDataOrThrow(Bike bike) => _bikeStorage.Add(bike);
 
     private Bike FindByIDOrThrow(Guid id)
     {
