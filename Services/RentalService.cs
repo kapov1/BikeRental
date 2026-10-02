@@ -12,16 +12,16 @@ class RentalService
 
     private void AddToData(Rental rental) => _rentalStorage.Add(rental);
 
-    private bool ValidDataForRental(Bike bike, DateOnly startDate, DateOnly plannedReturnDate)
+    private bool ValidDataForRental(BikeInfo bikeInfo, DateOnly startDate, DateOnly plannedReturnDate)
     {
         if (startDate > plannedReturnDate)
         {
             Console.WriteLine("Return date must be after start date.");
             return false;
         }
-        if (bike.Status != Bike.BikeStatus.Available)
+        if (bikeInfo.Status != Bike.BikeStatus.Available)
         {
-            Console.WriteLine($"Bike {bike.BikeID} is currently unavailable: it is either already rented out or undergoing maintenance.");
+            Console.WriteLine($"Bike {bikeInfo.Id} is currently unavailable: it is either already rented out or undergoing maintenance.");
             return false;
         }
 
@@ -35,18 +35,18 @@ class RentalService
         return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
-    public Guid Open(Bike bike, Customer customer, DateOnly startDate, DateOnly plannedReturnDate)
+    public Guid OpenOrThrow(BikeInfo bikeInfo, Customer customer, DateOnly startDate, DateOnly plannedReturnDate)
     {
-        if (!ValidDataForRental(bike, startDate, plannedReturnDate))
+        if (!ValidDataForRental(bikeInfo, startDate, plannedReturnDate))
         {
             throw new ArgumentException("Rental validation failed. Cannot process the request.");
         }
-        if (!_bikeService.TryRent(bike))
+        if (!_bikeService.TryRent(bikeInfo.Id))
         {
             throw new ArgumentException("Selected bike is not available for rental.");
         }
 
-        Rental rental = new(customer, bike, startDate, plannedReturnDate);
+        Rental rental = new(customer, bikeInfo, startDate, plannedReturnDate);
         AddToData(rental);
         return rental.Id;
     }
@@ -60,7 +60,7 @@ class RentalService
         DateOnly plannedReturnDate = rental.PlannedReturnDate;
         int currentRentalDays = currentDate.DayNumber - startDate.DayNumber;
         int totalRentalDays = plannedReturnDate.DayNumber - startDate.DayNumber;
-        int price = rental.Bike.PricePerDay;
+        int price = rental.BikeInfo.PricePerDay;
 
         int rentalCost = plannedReturnDate >= currentDate ? currentRentalDays * price : totalRentalDays * price;
         int penaltyFee = plannedReturnDate >= currentDate ? 0 : (currentDate.DayNumber - plannedReturnDate.DayNumber) * _penaltyRatePerDay;
@@ -68,11 +68,11 @@ class RentalService
         return (rentalCost, penaltyFee);
     }   
 
-    public void Close(Guid key)
+    public void CloseOrThrow(Guid key)
     {
         var rental = GetRentalOrThrow(key);
 
-        if (!_bikeService.TryReturn(rental.Bike)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
+        if (!_bikeService.TryReturn(rental.BikeInfo.Id)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
 
         //типо сохраняю в историю, в файлы, логи вывожу...
     }

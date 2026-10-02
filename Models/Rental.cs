@@ -1,14 +1,14 @@
 class Rental
 {
     public Customer Customer { get; }
-    public Bike Bike { get; }
+    public BikeInfo BikeInfo { get; }
     public DateOnly StartDate { get; }
     public DateOnly PlannedReturnDate { get; }
     public Guid Id { get; } = Guid.NewGuid();
 
-    public Rental(Customer customer, Bike bike, DateOnly startDate, DateOnly plannedReturnDate)
+    public Rental(Customer customer, BikeInfo bikeInfo, DateOnly startDate, DateOnly plannedReturnDate)
     {        
-        Bike = bike;
+        BikeInfo = bikeInfo;
         Customer = customer;
         StartDate = startDate;
         PlannedReturnDate = plannedReturnDate;

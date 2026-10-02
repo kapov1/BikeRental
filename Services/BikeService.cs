@@ -7,31 +7,50 @@ class BikeService
         _bikeStorage = bikeStorage;
     }
 
-    public bool Contains(Bike bike)
+    private bool Contains(Bike bike)
     {
-        return _bikeStorage.Bikes.Any(el => el.BikeID == bike.BikeID);
+        return _bikeStorage.Bikes.Any(el => el.Id == bike.Id);
     }
 
-    public bool TryAdd(Bike bike)
+    private void AddToDataOrThrow(Bike bike)
     {
-        if (!Contains(bike))
-        {
-            _bikeStorage.Add(bike);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (Contains(bike)) throw new ArgumentException("A bike with the specified ID already exists.");
+
+        _bikeStorage.Add(bike);
     }
 
-    public List<Bike> Find(Func<Bike, bool> match)
+    private Bike FindByID(Guid id)
     {
-        return _bikeStorage.Bikes.Where(match).ToList();
+        return _bikeStorage.Bikes.First(bike => bike.Id == id);
     }
 
-    public bool TryRent(Bike bike)
+    public Guid AddOrThrow(string bikeName, int pricePerDay, Bike.BikeType bikeType)
     {
+        Bike bike = new(bikeName, pricePerDay, bikeType);
+
+        AddToDataOrThrow(bike);
+
+        return bike.Id;
+    }
+
+    public List<BikeInfo> Find(Func<Bike, bool> match)
+    {
+        return _bikeStorage.Bikes
+        .Where(match)
+        .Select(bike => new BikeInfo(
+            bike.BikeName,
+            bike.PricePerDay,
+            bike.Type,
+            bike.Status,
+            bike.Id
+        ))
+        .ToList();
+    }
+
+    public bool TryRent(Guid id)
+    {
+        var bike = FindByID(id);
+
         if (bike.Status == Bike.BikeStatus.Available)
         {
             bike.ChangeStatusToRented();
@@ -43,8 +62,10 @@ class BikeService
         }
     }
 
-    public bool TryReturn(Bike bike)
+    public bool TryReturn(Guid id)
     {
+        var bike = FindByID(id);
+
         if (bike.Status != Bike.BikeStatus.Available)
         {
             bike.ChangeStatusToAvailable();
@@ -56,8 +77,10 @@ class BikeService
         }
     }
 
-    public bool TrySendToMaintenance(Bike bike)
+    public bool TrySendToMaintenance(Guid id)
     {
+        var bike = FindByID(id);
+
         if (bike.Status == Bike.BikeStatus.Available)
         {
             bike.ChangeStatusToIsService();
@@ -69,3 +92,11 @@ class BikeService
         }
     }
 }
+
+readonly record struct BikeInfo(
+    string BikeName,
+    int PricePerDay,
+    Bike.BikeType Type, 
+    Bike.BikeStatus Status,
+    Guid Id
+);
