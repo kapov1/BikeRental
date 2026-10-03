@@ -3,7 +3,7 @@ class Bike
     public enum BikeType
     {
         City,
-        Mountian,
+        Mountain,
         Road,
         Kids
     }
@@ -16,16 +16,18 @@ class Bike
     }
 
     public string BikeName { get; }
-    public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid Id { get; }
     public int PricePerDay { get; }
     public BikeType Type { get; }
-    public BikeStatus Status { get; private set; } = BikeStatus.Available;
+    public BikeStatus Status { get; private set; }
 
-    public Bike(string bikeName, int pricePerDay, BikeType type)
+    public Bike(string bikeName, int pricePerDay, BikeType type, Guid id, BikeStatus status = BikeStatus.Available)
     {
         BikeName = bikeName;
         PricePerDay = pricePerDay;
         Type = type;
+        Id = id;
+        Status = status;
     }
 
     public void ChangeStatusToIsService() => Status = BikeStatus.IsService;

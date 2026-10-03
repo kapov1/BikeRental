@@ -1,16 +1,17 @@
 class Rental
 {
-    public CustomerInfo CustomerInfo { get; }
-    public BikeInfo BikeInfo { get; }
+    public Guid CustomerId { get; }
+    public Guid BikeId { get; }
     public DateOnly StartDate { get; }
     public DateOnly PlannedReturnDate { get; }
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; }
 
-    public Rental(CustomerInfo customerInfo, BikeInfo bikeInfo, DateOnly startDate, DateOnly plannedReturnDate)
+    public Rental(Guid customerId, Guid bikeId, DateOnly startDate, DateOnly plannedReturnDate, Guid id)
     {        
-        BikeInfo = bikeInfo;
-        CustomerInfo = customerInfo;
+        BikeId = bikeId;
+        CustomerId = customerId;
         StartDate = startDate;
         PlannedReturnDate = plannedReturnDate;
+        Id = id;
     }
 }

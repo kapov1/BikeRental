@@ -41,20 +41,18 @@ class RentalService
         return rental ?? throw new KeyNotFoundException("Rental with the specified key was not found.");
     }
 
-    public Guid OpenOrThrow(Guid bikeId, CustomerInfo customerInfo, DateOnly startDate, DateOnly plannedReturnDate)
-    {   
-        var bikeInfo = _bikeService.GetRequiredBikeInfo(bikeId);
-
-        if (!ValidDataForRental(bikeInfo.Id, startDate, plannedReturnDate))
+    public Guid OpenOrThrow(Guid bikeId, Guid customerId, DateOnly startDate, DateOnly plannedReturnDate)
+    {
+        if (!ValidDataForRental(bikeId, startDate, plannedReturnDate))
         {
             throw new ArgumentException("Rental validation failed. Cannot process the request.");
         }
-        if (!_bikeService.TryRent(bikeInfo.Id))
+        if (!_bikeService.TryRent(bikeId))
         {
             throw new ArgumentException("Selected bike is not available for rental.");
         }
 
-        Rental rental = new(customerInfo, bikeInfo, startDate, plannedReturnDate);
+        Rental rental = new(customerId, bikeId, startDate, plannedReturnDate, Guid.NewGuid());
         AddToData(rental);
         return rental.Id;
     }
@@ -62,13 +60,14 @@ class RentalService
     public (int rentalCost, int penaltyFee) CalculateRental(Guid key)
     {
         var rental = GetRentalOrThrow(key);
+        var bikeInfo = _bikeService.GetRequiredBikeInfo(rental.BikeId);
 
         DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
         DateOnly startDate = rental.StartDate;
         DateOnly plannedReturnDate = rental.PlannedReturnDate;
         int currentRentalDays = currentDate.DayNumber - startDate.DayNumber;
         int totalRentalDays = plannedReturnDate.DayNumber - startDate.DayNumber;
-        int price = rental.BikeInfo.PricePerDay;
+        int price = bikeInfo.PricePerDay;
 
         int rentalCost = plannedReturnDate >= currentDate ? currentRentalDays * price : totalRentalDays * price;
         int penaltyFee = plannedReturnDate >= currentDate ? 0 : (currentDate.DayNumber - plannedReturnDate.DayNumber) * _penaltyRatePerDay;
@@ -80,7 +79,7 @@ class RentalService
     {
         var rental = GetRentalOrThrow(key);
 
-        if (!_bikeService.TryReturn(rental.BikeInfo.Id)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
+        if (!_bikeService.TryReturn(rental.BikeId)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
 
         //типо сохраняю в историю, в файлы, логи вывожу...
     }

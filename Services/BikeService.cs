@@ -16,7 +16,7 @@ class BikeService
 
     public Guid AddOrThrow(string bikeName, int pricePerDay, Bike.BikeType bikeType)
     {
-        Bike bike = new(bikeName, pricePerDay, bikeType);
+        Bike bike = new(bikeName, pricePerDay, bikeType, Guid.NewGuid());
 
         AddToDataOrThrow(bike);
 

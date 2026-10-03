@@ -7,29 +7,15 @@ class CustomerService
         _customerStorage = customerStorage;
     }
 
-    private bool Contains(Customer customer)
+    private void AddToData(Customer customer) => _customerStorage.Add(customer);
+
+    public Guid Add(string firstName, string lastName, string phoneNumber, DateOnly registrationDate)
     {
-        return _customerStorage.Customers.Any(client => client.PhoneNumber == customer.PhoneNumber);
-    }
+        Customer customer = new(firstName, lastName, phoneNumber, registrationDate, Guid.NewGuid());
 
-    private bool AddToData(Customer customer)
-    {
-        if (Contains(customer))
-        {
-            return false;
-        }
+        AddToData(customer);
 
-        _customerStorage.Add(customer);
-        return true;
-    }
-
-    public bool TryAdd(string firstName, string lastName, string phoneNumber, DateOnly registrationDate)
-    {
-        Customer customer = new(firstName, lastName, phoneNumber, registrationDate);
-
-        if (!AddToData(customer)) return false;
-
-        return true;
+        return customer.Id;
     }
 
     public List<CustomerInfo> Find(Func<Customer, bool> match)

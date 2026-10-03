@@ -1,6 +1,6 @@
 class CustomerStorage
 {
-    private const string DataPath = @"Data/CustomerData";
+    private const string DataPath = @"Data/CustomerData.json";
     private readonly IDataStore<Customer> _dataStore;
     private readonly List<Customer> _customers = new();
 

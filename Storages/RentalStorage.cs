@@ -1,6 +1,6 @@
 class RentalStorage
 {
-    private const string DataPath = @"Data/RentalData";
+    private const string DataPath = @"Data/RentalData.json";
     private readonly IDataStore<Rental> _dataStore;
     private readonly List<Rental> _rentals = new();
 
