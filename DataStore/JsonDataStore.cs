@@ -4,6 +4,11 @@ class JsonDataStore<T> : IDataStore<T>
 {
     public List<T>? Load(string path)
     {
+        if (!File.Exists(path))
+        {
+            return new List<T>();
+        }
+
         string text = File.ReadAllText(path);
 
         return JsonSerializer.Deserialize<List<T>>(text);
@@ -11,6 +16,8 @@ class JsonDataStore<T> : IDataStore<T>
 
     public void Save(IEnumerable<T> data, string path)
     {
+        Directory.CreateDirectory("Data");
+
         var options = new JsonSerializerOptions
         {
             WriteIndented = true
