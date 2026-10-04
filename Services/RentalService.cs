@@ -79,9 +79,9 @@ class RentalService
 
         int rentalCost = plannedReturnDate >= currentDate ? currentRentalDays * price : totalRentalDays * price;
         int penaltyFee = plannedReturnDate >= currentDate ? 0 : (currentDate.DayNumber - plannedReturnDate.DayNumber) * _penaltyRatePerDay;
-            
+
         return (rentalCost, penaltyFee);
-    }   
+    }
 
     public void CloseOrThrow(Guid id)
     {

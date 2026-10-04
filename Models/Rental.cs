@@ -27,7 +27,7 @@ class Rental
     }
 
     public Rental(Guid customerId, Guid bikeId, DateOnly startDate, DateOnly plannedReturnDate, Guid id)
-    {        
+    {
         BikeId = bikeId;
         CustomerId = customerId;
         StartDate = startDate;

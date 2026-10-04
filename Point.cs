@@ -13,22 +13,22 @@ class Point
         var services = new ServiceCollection();
 
         #region ServiceContainer
-            services.AddSingleton<BikeStorage>();
-            services.AddSingleton<CustomerStorage>();
-            services.AddSingleton<RentalStorage>();
+        services.AddSingleton<BikeStorage>();
+        services.AddSingleton<CustomerStorage>();
+        services.AddSingleton<RentalStorage>();
 
-            services.AddTransient<BikeService>();
-            services.AddTransient<CustomerService>();
-            services.AddTransient<RentalService>();
+        services.AddTransient<BikeService>();
+        services.AddTransient<CustomerService>();
+        services.AddTransient<RentalService>();
 
-            services.AddSingleton<PersistenceManager>();
-            services.AddSingleton<IConfiguration>(configuration);
-            services.AddSingleton(typeof(IDataStore<>), typeof(JsonDataStore<>));
+        services.AddSingleton<PersistenceManager>();
+        services.AddSingleton<IConfiguration>(configuration);
+        services.AddSingleton(typeof(IDataStore<>), typeof(JsonDataStore<>));
 
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole();
-            });
+        services.AddLogging(builder =>
+        {
+            builder.AddConsole();
+        });
         #endregion
 
         var serviceProvider = services.BuildServiceProvider();

@@ -1,6 +1,6 @@
 readonly record struct BikeInfo(
     string BikeName,
     int PricePerDay,
-    Bike.BikeType Type, 
+    Bike.BikeType Type,
     Guid Id
 );

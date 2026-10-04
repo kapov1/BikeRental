@@ -105,7 +105,7 @@ class BikeService
     public BikeInfo GetRequiredBikeInfo(Guid id)
     {
         var bike = _bikeStorage.Bikes.FirstOrDefault(bike => bike.Id == id);
-     
+
         if (bike is null) throw new KeyNotFoundException("Bike with the specified key was not found.");
 
         return new(bike.BikeName, bike.PricePerDay, bike.Type, bike.Id);

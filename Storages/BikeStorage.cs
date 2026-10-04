@@ -14,7 +14,7 @@ class BikeStorage
     }
 
     public void Save() => _dataStore.Save(_bikes, DataPath);
-    
+
     public void Load()
     {
         List<Bike>? bikes = _dataStore.Load(DataPath);
