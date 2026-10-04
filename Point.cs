@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 class Point
 {
@@ -23,6 +24,11 @@ class Point
             services.AddSingleton<PersistenceManager>();
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton(typeof(IDataStore<>), typeof(JsonDataStore<>));
+
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+            });
         #endregion
 
         var serviceProvider = services.BuildServiceProvider();
@@ -35,7 +41,7 @@ class Point
 
         persistenceManager.LoadData();
 
-        var bikeId = bikeService.AddOrThrow("BMX", 20, Bike.BikeType.City);
+        var bikeId = bikeService.Add("BMX", 20, Bike.BikeType.City);
         var customerId = customerService.Add("Max", "Var", "123", DateOnly.FromDateTime(DateTime.Now));
         var rentalId = rentalService.OpenOrThrow(bikeId, customerId, new DateOnly(2026, 10, 3), new DateOnly(2026, 10, 5));
         rentalService.CloseOrThrow(rentalId);

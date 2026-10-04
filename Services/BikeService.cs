@@ -1,24 +1,34 @@
+using Microsoft.Extensions.Logging;
+
 class BikeService
 {
     private readonly BikeStorage _bikeStorage;
+    private readonly ILogger<BikeService> _logger;
 
-    public BikeService(BikeStorage bikeStorage)
+    public BikeService(BikeStorage bikeStorage, ILogger<BikeService> logger)
     {
         _bikeStorage = bikeStorage;
+        _logger = logger;
     }
 
-    private void AddToDataOrThrow(Bike bike) => _bikeStorage.Add(bike);
+    private void AddToData(Bike bike)
+    {
+        _bikeStorage.Add(bike);
+        _logger.LogInformation("Bike added to storage.\nBike: {BikeId}", bike.Id);
+    }
 
     private Bike FindByIDOrThrow(Guid id)
     {
         return _bikeStorage.Bikes.First(bike => bike.Id == id);
     }
 
-    public Guid AddOrThrow(string bikeName, int pricePerDay, Bike.BikeType bikeType)
+    public Guid Add(string bikeName, int pricePerDay, Bike.BikeType bikeType)
     {
         Bike bike = new(bikeName, pricePerDay, bikeType, Guid.NewGuid());
 
-        AddToDataOrThrow(bike);
+        AddToData(bike);
+
+        _logger.LogInformation("Bike added successfully.\nBike: {BikeId}", bike.Id);
 
         return bike.Id;
     }
@@ -30,10 +40,12 @@ class BikeService
         if (bike.Status == Bike.BikeStatus.Available)
         {
             bike.ChangeStatusToRented();
+            _logger.LogInformation("Bike rented.\nBike: {BikeId}", id);
             return true;
         }
         else
         {
+            _logger.LogWarning("Failed to rent bike.\nBike: {BikeId}", id);
             return false;
         }
     }
@@ -45,10 +57,12 @@ class BikeService
         if (bike.Status == Bike.BikeStatus.Rented)
         {
             bike.ChangeStatusToAvailable();
+            _logger.LogInformation("Bike returned.\nBike: {BikeId}", id);
             return true;
         }
         else
         {
+            _logger.LogWarning("Failed to return bike,\nBike: {BikeId}", id);
             return false;
         }
     }
@@ -60,25 +74,29 @@ class BikeService
         if (bike.Status == Bike.BikeStatus.Available)
         {
             bike.ChangeStatusToIsService();
+            _logger.LogInformation("Bike sent for maintenance.\nBike: {BikeId}", id);
             return true;
         }
         else
         {
+            _logger.LogWarning("Failed to send bike for maintenance.\nBike: {BikeId}", id);
             return false;
         }
     }
 
-    public bool TryReturnFromMaintenance(Guid Id)
+    public bool TryReturnFromMaintenance(Guid id)
     {
-        var bike = FindByIDOrThrow(Id);
+        var bike = FindByIDOrThrow(id);
 
         if (bike.Status == Bike.BikeStatus.IsService)
         {
             bike.ChangeStatusToAvailable();
+            _logger.LogInformation("Bike returned from maintenance.\nBike: {BikeId}", id);
             return true;
         }
         else
         {
+            _logger.LogWarning("Failed to return bike from maintenance.\nBike: {BikeId}", id);
             return false;
         }
 
