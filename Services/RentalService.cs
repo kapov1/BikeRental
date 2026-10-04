@@ -81,6 +81,6 @@ class RentalService
 
         if (!_bikeService.TryReturn(rental.BikeId)) throw new InvalidOperationException("Cannot return a bike that is not currently rented.");
 
-        //типо сохраняю в историю, в файлы, логи вывожу...
+        rental.ChangeStatusToCompleted();
     }
 }

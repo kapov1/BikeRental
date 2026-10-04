@@ -42,7 +42,7 @@ class BikeService
     {
         var bike = FindByIDOrThrow(id);
 
-        if (bike.Status != Bike.BikeStatus.Available)
+        if (bike.Status == Bike.BikeStatus.Rented)
         {
             bike.ChangeStatusToAvailable();
             return true;
@@ -66,6 +66,22 @@ class BikeService
         {
             return false;
         }
+    }
+
+    public bool TryReturnFromMaintenance(Guid Id)
+    {
+        var bike = FindByIDOrThrow(Id);
+
+        if (bike.Status == Bike.BikeStatus.IsService)
+        {
+            bike.ChangeStatusToAvailable();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     public BikeInfo GetRequiredBikeInfo(Guid id)
